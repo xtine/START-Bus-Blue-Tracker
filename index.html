@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Start Bus - Blue Tracker</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,600,900" rel="stylesheet">
+  <style>
+    html {
+      font-family: 'Lato', sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 40px;
+      color: #5077AE;
+      margin: 15px 0;
+    }
+
+    h2 {
+      font-weight: 400;
+      font-size: 30px;
+      margin: 0;
+    }
+
+    .to-village,
+    .to-aspens
+    {
+      font-size: 30px;
+      border-radius: 3px;
+      padding: 15px 0;
+      margin: 25px 0;
+
+    }
+
+    @media (max-width: 700px) {
+      .to-village,
+      .to-aspens {
+        border: 2px solid #5077AE;
+      }
+    }
+
+    h3 {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .in-minutes {
+      padding-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main">
+    <h1>Next Blue Start Bus</h1>
+
+    <h2>It's now <span class="now"></span></h2>
+    <div class="to-village">
+      <h3>To Village at <span class="time"></span></h3>
+      <div class="in-minutes">In <span class="minutes"></span> minutes</div>
+    </div>
+    <div class="to-aspens">
+      <h3>To Aspens at <span class="time"></span></h3>
+      <div class="in-minutes">In <span class="minutes"></span> minutes</div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
+
+  <script type="text/javascript">
+
+    var getBusTimes = (function() {
+      $('.now').html(moment().format('h:mm a'));
+
+      $.getJSON('timetable.json', function (data) {
+        $.each(data['to-village'], function (key, value) {
+          var momentBusTime = moment(value, 'H:mm');
+
+          if (momentBusTime.isAfter(moment())) {
+            $('.to-village .time').html(momentBusTime.format('h:mm a'));
+            $('.to-village .minutes').html(
+              Math.abs(parseInt(
+                moment.duration(
+                  momentBusTime.diff(moment())
+                ).asMinutes()
+              ))
+            );
+
+            return false;
+          }
+        });
+        $.each(data['to-aspens'], function (key, value) {
+          var momentBusTime = moment(value, 'H:mm');
+
+          if (momentBusTime.isAfter(moment())) {
+            $('.to-aspens .time').html(momentBusTime.format('h:mm a'));
+            $('.to-aspens .minutes').html(
+              Math.abs(parseInt(
+                moment.duration(
+                  momentBusTime.diff(moment())
+                ).asMinutes()
+              ))
+            );
+            return false;
+          }
+        });
+      });
+    });
+
+    getBusTimes();
+
+    // fetch bus times every second to update
+    setInterval(function () {
+      getBusTimes();
+    }, 1000);
+
+  </script>
+</body>
+</html>
