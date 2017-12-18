@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Start Bus - Blue Tracker</title>
+  <title>Next Aspens Start Bus</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Lato:400,600,900" rel="stylesheet">
@@ -13,7 +13,7 @@
 
     h1 {
       font-weight: 900;
-      font-size: 40px;
+      font-size: 35px;
       color: #5077AE;
       margin: 15px 0;
     }
@@ -46,7 +46,7 @@
       margin: 0;
     }
 
-    .in-minutes {
+    .time-left {
       padding-top: 10px;
       font-style: italic;
     }
@@ -55,16 +55,16 @@
 <body>
 
   <div id="main">
-    <h1>Next Blue Start Bus</h1>
+    <h1>Next Aspens Start Bus</h1>
 
     <h2>It's now <span class="now"></span></h2>
     <div class="to-village">
-      <h3>To Village at <span class="time"></span></h3>
-      <div class="in-minutes">In <span class="minutes"></span> minutes</div>
+      <h3>To Village - <span class="time"></span></h3>
+      <div class="time-left"></div>
     </div>
     <div class="to-aspens">
-      <h3>To Aspens at <span class="time"></span></h3>
-      <div class="in-minutes">In <span class="minutes"></span> minutes</div>
+      <h3>To Aspens - <span class="time"></span></h3>
+      <div class="time-left"></div>
     </div>
   </div>
 
@@ -74,48 +74,87 @@
   <script type="text/javascript">
 
     var getBusTimes = (function() {
-      $('.now').html(moment().format('h:mm a'));
 
-      $.getJSON('timetable.json', function (data) {
-        $.each(data['to-village'], function (key, value) {
-          var momentBusTime = moment(value, 'H:mm');
+      var timeNow = moment();
+      // var timeNow = moment('3:00', 'h:mm')
 
-          if (momentBusTime.isAfter(moment())) {
-            $('.to-village .time').html(momentBusTime.format('h:mm a'));
-            $('.to-village .minutes').html(
-              Math.abs(parseInt(
-                moment.duration(
-                  momentBusTime.diff(moment())
-                ).asMinutes()
-              ))
+      var setTimeNow = function () {
+        $('.now').html(timeNow.format('h:mm a'));
+      }
+
+      var analyzeTimetable = function (destination) {
+        var $destinationClass = $('.' + destination);
+
+        $.getJSON('timetable.json', function (timetable) {
+          var nextBus = false;
+
+          // run through the bus timetable
+          $.each(timetable[destination], function (i, time) {
+            var momentBusTime = moment(time, 'H:mm');
+            var busTime = momentBusTime.format('h:mm a');
+
+            // check for next bus
+            if (momentBusTime.isAfter(timeNow)) {
+              $destinationClass.find('.time').html(busTime);
+
+              var timeLeft;
+              var minutesLeft = moment.duration(momentBusTime.diff(timeNow)).asMinutes();
+
+              // over an hour wait
+              if (minutesLeft > 59) {
+                timeLeft = "In ";
+                timeLeft += Math.abs(parseInt(
+                  moment.duration(momentBusTime.diff(timeNow)).asHours()
+                ));
+                timeLeft += " hours";
+              }
+              else {
+                timeLeft = "In ";
+                timeLeft += Math.abs(parseInt(
+                  moment.duration(momentBusTime.diff(timeNow)).asMinutes()
+                ));
+                timeLeft += " minutes";
+              }
+
+              if (minutesLeft > 1) {
+                $destinationClass.find('.time-left').html(timeLeft);
+              }
+              else {
+                $destinationClass.find('.time-left').html('Leaving soon!');
+              }
+
+              // set flag for incoming bus
+              nextBus = true;
+              return false;
+            }
+          });
+
+          // no busses left
+          if(!nextBus) {
+            $destinationClass.find('.time').html(
+              moment(timetable[destination][0], 'h:mm').format('h:mm a')
             );
-
-            return false;
+            $destinationClass.find('.in-minutes').html('Next bus leaves tomorrow morning');
           }
         });
-        $.each(data['to-aspens'], function (key, value) {
-          var momentBusTime = moment(value, 'H:mm');
+      }
 
-          if (momentBusTime.isAfter(moment())) {
-            $('.to-aspens .time').html(momentBusTime.format('h:mm a'));
-            $('.to-aspens .minutes').html(
-              Math.abs(parseInt(
-                moment.duration(
-                  momentBusTime.diff(moment())
-                ).asMinutes()
-              ))
-            );
-            return false;
-          }
-        });
-      });
-    });
+      var init = function () {
+        setTimeNow();
+        analyzeTimetable('to-village');
+        analyzeTimetable('to-aspens');
+      }
 
-    getBusTimes();
+      return {
+        init: init
+      };
+    })();
+
+    getBusTimes.init();
 
     // fetch bus times every second to update
     setInterval(function () {
-      getBusTimes();
+      getBusTimes.init();
     }, 1000);
 
   </script>
