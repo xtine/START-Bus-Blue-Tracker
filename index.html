@@ -76,7 +76,6 @@
     var getBusTimes = (function() {
 
       var timeNow = moment();
-      // var timeNow = moment('3:00', 'h:mm')
 
       var setTimeNow = function () {
         $('.now').html(timeNow.format('h:mm a'));
@@ -120,7 +119,7 @@
                 $destinationClass.find('.time-left').html(timeLeft);
               }
               else {
-                $destinationClass.find('.time-left').html('Leaving soon!');
+                $destinationClass.find('.time-left').html('Leaving now!');
               }
 
               // set flag for incoming bus
@@ -134,7 +133,7 @@
             $destinationClass.find('.time').html(
               moment(timetable[destination][0], 'h:mm').format('h:mm a')
             );
-            $destinationClass.find('.in-minutes').html('Next bus leaves tomorrow morning');
+            $destinationClass.find('.time-left').html('Next bus leaves tomorrow morning');
           }
         });
       }
