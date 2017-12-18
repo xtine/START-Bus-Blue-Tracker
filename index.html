@@ -75,16 +75,15 @@
 
     var getBusTimes = (function() {
 
-      var timeNow = moment();
-
       var setTimeNow = function () {
-        $('.now').html(timeNow.format('h:mm a'));
+        $('.now').html(moment().format('h:mm a'));
       }
 
       var analyzeTimetable = function (destination) {
         var $destinationClass = $('.' + destination);
 
         $.getJSON('timetable.json', function (timetable) {
+          var timeNow = moment();
           var nextBus = false;
 
           // run through the bus timetable
