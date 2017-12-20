@@ -38,18 +38,18 @@
             ));
             timeLeft += " minutes";
 
-            $destinationClass.find('.next-busses ul').empty();
+            $destinationClass.find('.next-buses ul').empty();
 
-            // show next three busses
+            // show next three buses
             for (b = 1; b < 4; b++) {
               var nextBusTime = timetable[destination][i + b];
               if (nextBusTime) {
-                $destinationClass.find('.next-busses ul')
+                $destinationClass.find('.next-buses ul')
                 .append('<li>')
                 .append(moment(nextBusTime, 'H:mm').format('h:mm a'));
               }
               else if (!nextBusTime && b === 1) {
-                $destinationClass.find('.next-busses ul')
+                $destinationClass.find('.next-buses ul')
                 .append('<li>')
                 .append('No more for today.');
               }
@@ -69,7 +69,7 @@
         }
       });
 
-      // no busses left
+      // no buses left
       if (!incomingBus) {
         $destinationClass.find('.time').html(
           moment(timetable[destination][0], 'h:mm').format('h:mm a')
@@ -78,7 +78,7 @@
       }
 
       $destinationClass.on('click', function () {
-        $(this).find('.next-busses').show();
+        $(this).find('.next-buses').show();
       });
     };
 

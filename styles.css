@@ -42,7 +42,7 @@ h3 {
   font-style: italic;
 }
 
-.next-busses {
+.next-buses {
   width: 95%;
   padding-top: 15px;
   margin: 15px auto 0 auto;
@@ -50,11 +50,11 @@ h3 {
   font-size: 25px;
   display: none;
 }
-.next-busses ul {
+.next-buses ul {
   padding: 0;
   margin: 5px 0;
 }
-.next-busses ul li {
+.next-buses ul li {
   padding: 5px 0;
   list-style: none;
 }
