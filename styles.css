@@ -1,0 +1,60 @@
+html {
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 40px;
+  color: #5077AE;
+  margin: 15px 0;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 30px;
+  margin: 0;
+}
+
+.to-village,
+.to-aspens
+{
+  font-size: 30px;
+  border-radius: 3px;
+  padding: 15px 0;
+  margin: 25px 0;
+}
+
+@media (max-width: 700px) {
+  .to-village,
+  .to-aspens {
+    border: 2px solid #5077AE;
+  }
+}
+
+h3 {
+  font-weight: 600;
+  margin: 0;
+}
+
+.time-left {
+  padding-top: 10px;
+  font-style: italic;
+}
+
+.next-busses {
+  width: 95%;
+  padding-top: 15px;
+  margin: 15px auto 0 auto;
+  border-top: 2px dotted #5077AE;
+  font-size: 25px;
+  display: none;
+}
+.next-busses ul {
+  padding: 0;
+  margin: 5px 0;
+}
+.next-busses ul li {
+  padding: 5px 0;
+  list-style: none;
+}

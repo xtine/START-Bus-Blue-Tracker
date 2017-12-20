@@ -5,52 +5,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Lato:400,600,900" rel="stylesheet">
-  <style>
-    html {
-      font-family: 'Lato', sans-serif;
-      text-align: center;
-    }
 
-    h1 {
-      font-weight: 900;
-      font-size: 40px;
-      color: #5077AE;
-      margin: 15px 0;
-    }
-
-    h2 {
-      font-weight: 400;
-      font-size: 30px;
-      margin: 0;
-    }
-
-    .to-village,
-    .to-aspens
-    {
-      font-size: 30px;
-      border-radius: 3px;
-      padding: 15px 0;
-      margin: 25px 0;
-
-    }
-
-    @media (max-width: 700px) {
-      .to-village,
-      .to-aspens {
-        border: 2px solid #5077AE;
-      }
-    }
-
-    h3 {
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .time-left {
-      padding-top: 10px;
-      font-style: italic;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 
@@ -61,100 +17,24 @@
     <div class="to-village">
       <h3>To Village - <span class="time"></span></h3>
       <div class="time-left"></div>
+      <div class="next-busses">
+        Next busses:
+        <ul></ul>
+      </div>
     </div>
     <div class="to-aspens">
       <h3>To Aspens - <span class="time"></span></h3>
       <div class="time-left"></div>
+      <div class="next-busses">
+        Next busses:
+        <ul></ul>
+      </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
 
-  <script type="text/javascript">
-
-    var getBusTimes = (function() {
-
-      var setTimeNow = function () {
-        $('.now').html(moment().format('h:mm a'));
-      }
-
-      var analyzeTimetable = function (destination) {
-        var $destinationClass = $('.' + destination);
-
-        $.getJSON('timetable.json', function (timetable) {
-          var timeNow = moment();
-          var nextBus = false;
-
-          // run through the bus timetable
-          $.each(timetable[destination], function (i, time) {
-            var momentBusTime = moment(time, 'H:mm');
-            var busTime = momentBusTime.format('h:mm a');
-
-            // check for next bus
-            if (momentBusTime.isAfter(timeNow)) {
-              $destinationClass.find('.time').html(busTime);
-
-              var timeLeft;
-              var minutesLeft = moment.duration(momentBusTime.diff(timeNow)).asMinutes();
-
-              // over an hour wait
-              if (minutesLeft > 59) {
-                timeLeft = "In ";
-                timeLeft += Math.abs(parseInt(
-                  moment.duration(momentBusTime.diff(timeNow)).asHours()
-                ));
-                timeLeft += " hours";
-              }
-              else {
-                timeLeft = "In ";
-                timeLeft += Math.abs(parseInt(
-                  moment.duration(momentBusTime.diff(timeNow)).asMinutes()
-                ));
-                timeLeft += " minutes";
-              }
-
-              if (minutesLeft > 1) {
-                $destinationClass.find('.time-left').html(timeLeft);
-              }
-              else {
-                $destinationClass.find('.time-left').html('Leaving now!');
-              }
-
-              // set flag for incoming bus
-              nextBus = true;
-              return false;
-            }
-          });
-
-          // no busses left
-          if(!nextBus) {
-            $destinationClass.find('.time').html(
-              moment(timetable[destination][0], 'h:mm').format('h:mm a')
-            );
-            $destinationClass.find('.time-left').html('Next bus leaves tomorrow morning');
-          }
-        });
-      }
-
-      var init = function () {
-        setTimeNow();
-        analyzeTimetable('to-village');
-        analyzeTimetable('to-aspens');
-      }
-
-      return {
-        init: init
-      };
-    })();
-
-    getBusTimes.init();
-
-    // fetch bus times every second to update
-    setInterval(function () {
-      getBusTimes.init();
-    }, 1000);
-
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
